@@ -81,19 +81,10 @@ const Login = () => {
   };
 
   return (
-    
-  
-    <div className="col-md-12"
-     style={{
-        background: "linear-gradient(to bottom, #7b68ee, #9370db)",
-        height: "100vh",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-      }}>
+    <div className="col-md-12">
       <div className="card card-container">
         {/* Other form elements... */}
-     
+        
       
 
         <Form onSubmit={handleLogin} ref={form}>

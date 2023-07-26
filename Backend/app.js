@@ -1,15 +1,35 @@
-const http = require('http');
+const express = require("express");
+const bodyParser = require("body-parser");
+const cors = require("cors");
 
-// Create a server
-const server = http.createServer((req, res) => {
-  res.writeHead(200, { 'Content-Type': 'text/plain' });
-  res.end('Hello, World!');
+const app = express();
+const port = process.env.PORT || 5000;
+
+// Middleware
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors());
+
+// Routes
+// Define your routes here
+// For example:
+app.get("/api/test", (req, res) => {
+  res.json({ message: "Backend API is working!" });
 });
 
-// Set the port number
-const port = 5000;
+app.post("/api/data", (req, res) => {
+  // This is an example of a POST request handler
+  // Here, you can handle the incoming data and perform any necessary operations
+  const data = req.body;
+  console.log("Received data from the client:", data);
 
-// Start the server and listen on the specified port
-server.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
+  // Return a response to the client
+  res.json({ success: true, message: "Data received successfully!" });
+});
+
+// Add more routes as needed...
+
+// Start the server
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
 });

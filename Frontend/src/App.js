@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Routes, Route, Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
-
+import { fetchDataFromBackend } from './components/api'; // Corrected import path
 import AuthService from "./services/auth.service";
 import Login from "./components/Login";
 import Register from "./components/Register";
@@ -17,6 +17,7 @@ const App = () => {
   const [showModeratorBoard, setShowModeratorBoard] = useState(false);
   const [showAdminBoard, setShowAdminBoard] = useState(false);
   const [currentUser, setCurrentUser] = useState(undefined);
+  const [data, setData] = useState(null);
 
   useEffect(() => {
     const user = AuthService.getCurrentUser();
@@ -26,6 +27,14 @@ const App = () => {
       setShowModeratorBoard(user.roles.includes("ROLE_MODERATOR"));
       setShowAdminBoard(user.roles.includes("ROLE_ADMIN"));
     }
+
+    // Fetch data from the backend when the component mounts
+    fetchDataFromBackend()
+      .then((data) => {
+        console.log("Data from backend:", data);
+        setData(data);
+      })
+      .catch((error) => console.error('Error:', error));
   }, []);
 
   const logOut = () => {
@@ -34,7 +43,6 @@ const App = () => {
     setShowAdminBoard(false);
     setCurrentUser(undefined);
   };
-
   return (
     <div>
       <nav className="navbar navbar-expand navbar-dark bg-dark bg-gradient">
@@ -71,6 +79,14 @@ const App = () => {
               </Link>
             </li>
           )}
+
+          {/* Data Rendering Section */}
+          <div>
+            <div>
+            {data ? <p>{data.message.toString()}</p> : <p>Loading...</p>}
+            </div>
+          </div>
+
         </div>
 
         {currentUser ? (
@@ -99,13 +115,9 @@ const App = () => {
                 Sign Up
               </Link>
             </li>
-            
+
             {/* Add link to "Forgot Password" page */}
-            <li className="nav-item">
-              <Link to={"/forgot-password"} className="nav-link">
-               
-              </Link>
-            </li>
+          
           </div>
         )}
       </nav>
