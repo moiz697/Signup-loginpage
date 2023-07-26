@@ -5,6 +5,9 @@ import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
 
 import AuthService from "../services/auth.service";
+import userData from "./data.json";
+
+
 
 const required = (value) => {
   if (!value) {
@@ -25,8 +28,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
-  const [loginClicked, setLoginClicked] = useState(false); // New state for tracking the login click
-  const [showPassword, setShowPassword] = useState(false); // New state for the show password feature
+  const [showPassword, setShowPassword] = useState(false);
 
   const onChangeUsername = (e) => {
     setUsername(e.target.value);
@@ -45,35 +47,23 @@ const Login = () => {
     form.current.validateAll();
 
     if (checkBtn.current.context._errors.length === 0) {
-      AuthService.login(username, password).then(
-        () => {
+      // Check if there is a user with the provided username and password
+      const user = userData.users.find((user) => user.email === username && user.password === password);
+
+      if (user) {
+        // Simulate a delay to mimic server response time (you can remove this in production)
+        setTimeout(() => {
+          AuthService.login(user); // Assuming AuthService.login() accepts a user object as an argument for successful login
           navigate("/profile");
           window.location.reload();
-        },
-        (error) => {
-          const resMessage =
-            (error.response &&
-              error.response.data &&
-              error.response.data.message) ||
-            error.message ||
-            error.toString();
-
-          setLoading(false);
-          setMessage(resMessage);
-        }
-      );
+        }, 1000); // 1 second delay
+      } else {
+        setLoading(false);
+        setMessage("Invalid username or password.");
+      }
     } else {
       setLoading(false);
     }
-  };
-
-  const handleLoginClick = () => {
-    // Update the loginClicked state to true
-    setLoginClicked(true);
-    // Redirect the user to the login page after a small delay (optional)
-    setTimeout(() => {
-      window.location.href = '/forgot-password'; // Replace '/login' with the correct path to your login page
-    }, 500); // Delay the navigation to give time for the success message to show (optional)
   };
 
   const handleShowPassword = () => {
@@ -83,10 +73,6 @@ const Login = () => {
   return (
     <div className="col-md-12">
       <div className="card card-container">
-        {/* Other form elements... */}
-        
-      
-
         <Form onSubmit={handleLogin} ref={form}>
           {/* Username input */}
           <div className="form-group">
@@ -141,16 +127,17 @@ const Login = () => {
               </div>
             </div>
           )}
-            {/* Styled "Forgot password" span */}
-        <div className="form-group">
-          <span
-            className="Forgetpassword"
-            onClick={handleLoginClick}
-            style={{ color: "blue", marginTop: "10px" }}
-          >
-            Forgot password
-          </span>
-        </div>
+
+          {/* Styled "Forgot password" span */}
+          <div className="form-group">
+  <span
+    className="Forgetpassword"
+    onClick={handleShowPassword}
+    style={{ color: "blue", marginTop: "10px" }}
+  >
+    Forgot password
+  </span>
+</div>
 
           <CheckButton style={{ display: "none" }} ref={checkBtn} />
         </Form>

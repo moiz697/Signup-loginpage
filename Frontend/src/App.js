@@ -13,6 +13,9 @@ import BoardModerator from "./components/BoardModerator";
 import BoardAdmin from "./components/BoardAdmin";
 import ForgotPassword from "./components/Forgetpassword"; // Import the new ForgotPassword component
 
+// Import the UserService module
+import UserService from './services/user.service'; // Make sure to provide the correct path here
+
 const App = () => {
   const [showModeratorBoard, setShowModeratorBoard] = useState(false);
   const [showAdminBoard, setShowAdminBoard] = useState(false);
@@ -43,6 +46,7 @@ const App = () => {
     setShowAdminBoard(false);
     setCurrentUser(undefined);
   };
+
   return (
     <div>
       <nav className="navbar navbar-expand navbar-dark bg-dark bg-gradient">
@@ -83,7 +87,7 @@ const App = () => {
           {/* Data Rendering Section */}
           <div>
             <div>
-            {data ? <p>{data.message.toString()}</p> : <p>Loading...</p>}
+              {data ? <p>{data.message.toString()}</p> : <p></p>}
             </div>
           </div>
 
@@ -117,7 +121,7 @@ const App = () => {
             </li>
 
             {/* Add link to "Forgot Password" page */}
-          
+           
           </div>
         )}
       </nav>

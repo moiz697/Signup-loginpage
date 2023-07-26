@@ -124,33 +124,32 @@ const Register = () => {
 
   const handleRegister = (e) => {
     e.preventDefault();
-
+  
     setMessage("");
     setSuccessful(false);
-
+  
     form.current.validateAll();
-
+  
     if (checkBtn.current.context._errors.length === 0) {
-      AuthService.register(firstName, lastName, email, password).then(
-        (response) => {
+      AuthService.register(firstName, lastName, email, password)
+        .then((response) => {
           setMessage(response.data.message);
           setSuccessful(true);
-        },
-        (error) => {
+        })
+        .catch((error) => {
           const resMessage =
             (error.response &&
               error.response.data &&
               error.response.data.message) ||
             error.message ||
             error.toString();
-
+  
           setMessage(resMessage);
           setSuccessful(false);
-        }
-      );
+        });
     }
   };
-
+  
   const handleLoginClick = () => {
     window.location.href = '/login'; // Replace '/login' with the correct path to your login page
   };
