@@ -3,21 +3,19 @@ import UserService from "../services/user.service";
 
 const Home = () => {
   const [content, setContent] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    UserService.getPublicContent().then(
-      (response) => {
-        setContent(response.data);
-      },
-      (error) => {
-        const _content =
-          (error.response && error.response.data) ||
-          error.message ||
-          error.toString();
-
-        setContent(_content);
-      }
-    );
+    // Fetch data from the backend when the component mounts
+    UserService.getPublicContent()
+      .then((response) => {
+        setContent(response.data.message); // Assuming the backend sends the "message" property
+        setLoading(false); // Set loading to false once data is fetched
+      })
+      .catch((error) => {
+        setContent("Error fetching data from the backend.");
+        setLoading(false); // Set loading to false in case of an error
+      });
   }, []);
 
   return (
@@ -30,14 +28,13 @@ const Home = () => {
         alignItems: "center",
       }}
     >
-      <div className="container"
-      >
+      <div className="container">
         <header
           className="jumbotron bg-light text-center"
           style={{ color: "purple" }}
         >
           <h3 className="display-4">Welcome to AGEDB</h3>
-          <p className="lead">{content}</p>
+          {loading ? <p>Loading...</p> : <p className="lead">{content}</p>}
         </header>
       </div>
     </div>
